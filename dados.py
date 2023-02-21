@@ -21,6 +21,15 @@ def rolagem_8(dados, proficiencia):
         dados = dados - 1
     return valor
 
+def rolagem_8_separados(dados, proficiencia):
+    valor = 0
+    while dados > 0:
+        valor_d8 = (rd.randint(1, 8))
+        valor_d8_proficiencia = valor_d8 + proficiencia
+        dados = dados - 1
+        
+    return valor_d8, valor_d8_proficiencia
+
 def rolagem_10(dados, proficiencia):
     valor = 0
     while dados > 0:

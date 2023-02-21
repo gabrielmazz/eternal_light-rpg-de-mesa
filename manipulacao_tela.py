@@ -29,8 +29,7 @@ def define_nome_janela(name):
     
     
 def define_icone(icon):
-    pygame.display.set_icon(icon)
-    
+    pygame.display.set_icon(icon) 
         
 """
     Essa função "carrega_imagem" está sendo usada para carregar uma imagem específica (especificada pelo parâmetro "imagem") utilizando a biblioteca Pygame. O método pygame.image.load é usado para 
@@ -97,6 +96,9 @@ def rederiza_textos(x, y, text):
 def posicoes_elemento(x, y, z, NA):
     map_rect = pygame.Rect(x, y, z, NA)
     return map_rect
+
+def desenha_borda(screen):
+    pygame.draw.rect(screen, (255, 255, 255), posicoes_elemento(0, 0, 1600, 900), 10)
 
 """
     Este trecho de código está definindo uma função "limpa_tela", que recebe como parâmetro "screen". Dentro da função, o comando "screen.fill" é usado para preencher a tela inteira com a cor preta (0, 0, 0). 

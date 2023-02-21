@@ -1,5 +1,6 @@
 import time
 import dados as d
+import math
 import manipulacao_tela as mt
 
 
@@ -64,10 +65,25 @@ def testa_vida(hp_value_personagem_1, hp_value_personagem_2, hp_value_npc, scree
     de renderização de texto da biblioteca Pygame para desenhar o texto na tela, com as coordenadas (10, screen.get_height() - 80). O texto mostrado é formato com o resultado do rolamento 
     do dado, juntamente com a proficiência adicionada a esse resultado.
 """
-def draw_dice_roll(screen, font, dice_roll, dice_roll_proficiencia, proficiencia):
+def draw_dice_roll(screen, font, dice_roll, dice_roll_proficiencia, proficiencia, key_pressed):
     # Printa na tela o dado rodado
     text = font.render(f"Dice Roll = {dice_roll} + {proficiencia} = {dice_roll_proficiencia}", True, (255, 255, 255))
     screen.blit(text, (10, screen.get_height() - 80))
+  
+def realiza_cura_npc(npc, screen, font, hp_value_npc):
+    dice_roll, dice_roll_proficiencia = d.rolagem_8(2, npc.constituicao)
+    
+    # Printa na tela o dado de vida rodado
+    draw_dice_roll(screen, font, dice_roll, dice_roll_proficiencia, npc.constituicao)
+    
+    # Faz a cura do boneco
+    hp_value_npc += dice_roll_proficiencia
+    
+    key_pressed = True
+    
+    return key_pressed, hp_value_npc
+    
+     
     
 """
     Este trecho de código é uma função que determina o turno de três personagens, player_1, player_2 e npc, em uma batalha ou jogo de RPG. A função começa rolando o dado para cada um dos 
@@ -148,8 +164,7 @@ def turn_order(screen, turn_nomes, turn, font_turns, font):
         mt.elementos_tela(screen, text_turn_3, (1400, 550))  
         
     mt.update_tela()
-    
-    
+       
 """
     Esse trecho de código define uma função "verifica_botoes_precionados". A função recebe três parâmetros: "key_pressed_player_1", "key_pressed_player_2" e "key_pressed_bot". A função verifica se 
     os três valores são "True". Se for, a função atribui "False" aos três valores. Por fim, a função retorna os três valores atualizados.
@@ -161,5 +176,57 @@ def verifica_botoes_precionados(key_pressed_player_1, key_pressed_player_2, key_
         key_pressed_bot = False
 
     return key_pressed_player_1, key_pressed_player_2, key_pressed_bot   
+
+
+def verifica_engajamento_estado(per_rect, per_rect_2):
+    print("Você está engajado")
+    x1, y1, z1, a1 = per_rect
+    x2, y2, z2, a2 = per_rect_2
     
+    # Distancia entre os centros dos retangulos
+    distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     
+    return distancia
+
+    
+"""
+    Este código implementa duas funções, a primeira função "verifica_engajamento" é responsável por verificar se dois retângulos estão engajados. Isso é feito pela verificação da distância 
+    entre os centros dos dois retângulos. Se a distância for menor ou igual à distância de engajamento, a função retorna "True", caso contrário retorna "False". A segunda função "realiza_golpe" 
+    verifica se o jogador 1 está engajado com o jogador 2. Isso é feito chamando a função "verifica_engajamento". Se o jogador 1 não estiver engajado, a função imprime "Você não está engajado" 
+    e retorna o valor de hp_value e key_pressed. Se o jogador 1 estiver engajado, então ele rola os dados usando a função "d.rolagem_20_separados" e verifica se o resultado é igual a 20 ou se 
+    é maior ou igual ao CA (Classe de Armadura) do jogador 2. Se for, então a vida do jogador 2 é decrementada pelo valor de dice_roll_proficiencia e a função "mg.draw_dice_roll" é chamada para 
+    desenhar os resultados dos dados na tela. Caso contrário, a função imprime "Você não acertou" e a função "mg.draw_dice_roll" é chamada para desenhar os resultados dos dados na tela. Em ambos 
+    os casos, a função retorna o valor de hp_value e key_pressed.
+"""
+def verifica_engajamento(per_rect, per_rect_2, distancia_engajamento):
+    print("Você está engajado")
+    x1, y1, z1, a1 = per_rect
+    x2, y2, z2, a2 = per_rect_2
+    
+    # Distancia entre os centros dos retangulos
+    distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    
+    if distancia <= distancia_engajamento:
+        return True
+    else:
+        return False
+
+def realiza_golpe(per_rect, per_rect_2, distancia_engajamento, player_1, player_2, hp_value, key_pressed, screen, font):
+    if not verifica_engajamento(per_rect, per_rect_2, distancia_engajamento):
+        print("Você não está engajado")
+        return hp_value, key_pressed
+    
+    dice_roll, dice_roll_proficiencia = d.rolagem_20_separados(1, (player_1.destreza + player_1.arma))
+    key_pressed = True
+
+    if ((dice_roll == 20) or (dice_roll >= player_2.ca)):
+        hp_value -= dice_roll_proficiencia
+        print(hp_value)
+        draw_dice_roll(screen, font, dice_roll, dice_roll_proficiencia, (player_1.destreza + player_1.arma))
+        return hp_value, key_pressed
+
+    else:
+        print("Você não acertou")
+        draw_dice_roll(screen, font, dice_roll, dice_roll_proficiencia, (player_1.destreza + player_1.arma))
+        return hp_value, key_pressed
+ 
