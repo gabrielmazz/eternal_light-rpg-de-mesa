@@ -8,7 +8,7 @@ import funcoes_manipulacao_gameplay as fmg
 from personagem import *
 from npc import *
 
-def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2):
+def gameplay(personagem_1, personagem_2, personagem_1_dead, personagem_2_dead, screen, mapa, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2):
     
     """
         Faz a inicialização e preparação para desenhar a tela do jogo. A primeira coisa que é feita é a definição da fonte que será usada na tela. Em seguida, o fundo do mapa 
@@ -34,19 +34,27 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
     per_image_player_1 = mt.escala_imagem(4, per_image_player_1)
     per_image_player_2 = mt.escala_imagem(4, per_image_player_2)
     
+    # Aleatoria os valores para multiplos 
+    x_player_1 = fmg.arredonda_para_multiplos(rd.randint(100, 1500))
+    y_player_1 = fmg.arredonda_para_multiplos(rd.randint(100, 800))
+    
+    x_player_2 = fmg.arredonda_para_multiplos(rd.randint(100, 1500))
+    y_player_2 = fmg.arredonda_para_multiplos(rd.randint(100, 800))
+    
     # Carrega a posição da imagem dos players
-    per_rect_player_1 = mt.posicoes_elemento(100, 100, 0, 0)
-    per_rect_player_2 = mt.posicoes_elemento(300, 100, 0, 0)
+    per_rect_player_1 = mt.posicoes_elemento(x_player_1, y_player_1, 0, 0)
+    per_rect_player_2 = mt.posicoes_elemento(x_player_2, y_player_2, 0, 0)
     
     # Carrega a imagem do NPC
     npc_image = mt.carrega_imagem("img/personagens/npc.png")
     npc_image = mt.escala_imagem(4, npc_image)
     
-    # Carrega a posição da imagem do NPC
-    npc_rect = mt.posicoes_elemento(800, 100, 0, 0)
+    # Aleatoria os valores para multiplos 
+    x_npc = fmg.arredonda_para_multiplos(rd.randint(100, 1500))
+    y_npc = fmg.arredonda_para_multiplos(rd.randint(100, 800))
     
-    # Cria o react da borda do mapa
-    border_rect = mt.posicoes_elemento(0, 0, 1550, 850)
+    # Carrega a posição da imagem do NPC
+    npc_rect = mt.posicoes_elemento(x_npc, y_npc, 0, 0)
     
     # Printa a posição dos jogadores e do NPC
     print(per_rect_player_1)
@@ -86,7 +94,7 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
     turn_valores, turn_nomes = fmg.determina_turno(player_1, player_2, npc)
     
     # Printa a ordem dos turnos
-    print(turn_nomes)    
+    print("Ordem dos turnos: ", turn_nomes)   
 
     """
         Adicionar e armazenar as informações de HP (pontos de vida) e CA (Classe de Armadura) dos personagens "player_1", "player_2" e "npc". Os valores são obtidos através de acesso às propriedades 
@@ -113,10 +121,14 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
     
     turn = 1
     
-    #-----------------
-    turn_nomes[0] = 'Warrior'
-    turn_nomes[1] = 'Elemental'
-    turn_nomes[2] = 'Shielder'
+    player_1_vivo = True
+    player_2_vivo = True
+    npc_vivo = True
+    
+    # Variaveis para o npc
+    quantidade_cura_npc = 3   # Vezes que o elemental pode rodar uma cura
+    ocioso = 0                # Quantidade de turnos, quando >= 3, ele recupera 1 de cura
+    npc_estado = 1            # Determina o estado que o boneco está
      
     # Loop de jogo
     running = True
@@ -127,11 +139,6 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
                 running = False
                     
             elif event.type == pygame.KEYDOWN:
-                
-                # Variaveis para o npc
-                quantide_cura_npc = 3   # Vezes que o elemental pode rodar uma cura
-                ocioso = 0              # Quantidade de turnos, quando >= 3, ele recupera 1 de cura
-                npc_estado = 1
 
                 """ Está parte é responsável por gerenciar o turno de jogada dos jogadores em uma partida de jogo de RPG. A partir de uma lista chamada "turn_nomes" que contém o nome dos jogadores em ordem 
                     aleatória (Player_1, Player_2 e Bot), cada jogador é chamado uma vez e seu movimento é executado. Por exemplo, na primeira iteração da lista, se o primeiro elemento for "Player_1", a função 
@@ -151,71 +158,83 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
                 
                 # Teste para o turn_nomes[0]
                 if turn_nomes[0] == name_personagem_1 and key_pressed_player_1 != True:
-                    key_pressed_player_1, hp_value_npc = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
+                    key_pressed_player_1, hp_value_npc, hp_value_personagem_player_1 = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
                                                                                   npc_rect, player_1, npc, hp_value_npc)
                     
-                    if key_pressed_player_1 == True:
+                    if(key_pressed_player_1 == True):
                         turn += 1
                     
                 elif turn_nomes[0] == name_personagem_2 and key_pressed_player_2 != True:
-                    key_pressed_player_2, hp_value_npc = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
+                    key_pressed_player_2, hp_value_npc, hp_value_personagem_player_2 = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
                                                                                                   npc_rect, player_2, npc, hp_value_npc)
 
-                    if key_pressed_player_2 == True:
+                    if(key_pressed_player_2 == True):
                         turn += 1
 
                 elif turn_nomes[0] == "Elemental" and key_pressed_bot != True:
-                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, quantide_cura_npc, ocioso, npc_estado = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, hp_value_npc, key_pressed_bot,
-                                                                                                                    player_1, player_2, npc, hp_value_personagem_player_1, hp_value_personagem_player_2,
-                                                                                                                    per_rect_player_1, per_rect_player_2, quantide_cura_npc, ocioso, npc_estado)
-                                                                
-                    if key_pressed_bot == True:
+                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, hp_value_npc, quantidade_cura_npc, ocioso = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, 
+                                                                                                                                            hp_value_npc, key_pressed_bot,
+                                                                                                                                            player_1, player_2, npc, 
+                                                                                                                                            hp_value_personagem_player_1, hp_value_personagem_player_2,
+                                                                                                                                            per_rect_player_1, per_rect_player_2, 
+                                                                                                                                            player_1_vivo, player_2_vivo,
+                                                                                                                                            quantidade_cura_npc, ocioso, npc_estado)
+                    
+                    if(key_pressed_bot == True):
                         turn += 1
                     
                 # Teste para o turn_nomes[1]    
                 elif turn_nomes[1] == name_personagem_1 and key_pressed_player_1 != True:
-                    key_pressed_player_1, hp_value_npc = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
+                    key_pressed_player_1, hp_value_npc, hp_value_personagem_player_1 = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
                                                                                                   npc_rect, player_1, npc, hp_value_npc)
                 
-                    if key_pressed_player_1 == True:
+                    if(key_pressed_player_1 == True):
                         turn += 1
-                 
+                    
                 elif turn_nomes[1] == name_personagem_2 and key_pressed_player_2 != True:
-                    key_pressed_player_2, hp_value_npc = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
+                    key_pressed_player_2, hp_value_npc, hp_value_personagem_player_2 = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
                                                                                                     npc_rect, player_2, npc, hp_value_npc)
                 
-                    if key_pressed_player_2 == True:
+                    if(key_pressed_player_2 == True):
                         turn += 1
                     
                 elif turn_nomes[1] == "Elemental" and key_pressed_bot != True:
-                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, quantide_cura_npc, ocioso, npc_estado = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, hp_value_npc, key_pressed_bot,
-                                                                                                                    player_1, player_2, npc, hp_value_personagem_player_1, hp_value_personagem_player_2,
-                                                                                                                    per_rect_player_1, per_rect_player_2, quantide_cura_npc, ocioso, npc_estado)
+                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, hp_value_npc, quantidade_cura_npc, ocioso = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, 
+                                                                                                                                            hp_value_npc, key_pressed_bot,
+                                                                                                                                            player_1, player_2, npc, 
+                                                                                                                                            hp_value_personagem_player_1, hp_value_personagem_player_2,
+                                                                                                                                            per_rect_player_1, per_rect_player_2, 
+                                                                                                                                            player_1_vivo, player_2_vivo,
+                                                                                                                                            quantidade_cura_npc, ocioso, npc_estado)
                    
-                    if key_pressed_bot == True:
-                        turn += 1
+                    if(key_pressed_bot == True):
+                        turn += 1 
                     
                 # Teste para o turn_nomes[2]   
                 elif turn_nomes[2] == name_personagem_1 and key_pressed_player_1 != True:
-                    key_pressed_player_1, hp_value_personagem_player_1 = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
+                    key_pressed_player_1, hp_value_npc, hp_value_personagem_player_1 = mv.movimentacao_player_1(event, screen, mapa, per_rect_player_1, font, hp_value_personagem_player_1, key_pressed_player_1,
                                                                                                   npc_rect, player_1, npc, hp_value_npc)
                     
-                    if key_pressed_player_1 == True:
+                    if(key_pressed_player_1 == True):
                         turn += 1
                     
                 elif turn_nomes[2] == name_personagem_2 and key_pressed_player_2 != True:
-                    key_pressed_player_2, hp_value_personagem_player_2 = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
+                    key_pressed_player_2, hp_value_npc, hp_value_personagem_player_2 = mv.movimentacao_player_2(event, screen, mapa, per_rect_player_2, font, hp_value_personagem_player_2, key_pressed_player_2,
                                                                                                   npc_rect, player_2, npc, hp_value_npc)
                     
-                    if key_pressed_player_2 == True:
+                    if(key_pressed_player_2 == True):
                         turn += 1
                     
                 elif turn_nomes[2] == "Elemental" and key_pressed_bot != True:
-                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, quantide_cura_npc, ocioso, npc_estado = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, hp_value_npc, key_pressed_bot,
-                                                                                                                    player_1, player_2, npc, hp_value_personagem_player_1, hp_value_personagem_player_2,
-                                                                                                                    per_rect_player_1, per_rect_player_2, quantide_cura_npc, ocioso, npc_estado)
+                    key_pressed_bot, hp_value_personagem_player_1, hp_value_personagem_player_2, hp_value_npc, quantidade_cura_npc, ocioso = mv.movimentacao_npc(event, screen, mapa, npc_rect, font, 
+                                                                                                                                            hp_value_npc, key_pressed_bot,
+                                                                                                                                            player_1, player_2, npc, 
+                                                                                                                                            hp_value_personagem_player_1, hp_value_personagem_player_2,
+                                                                                                                                            per_rect_player_1, per_rect_player_2, 
+                                                                                                                                            player_1_vivo, player_2_vivo,
+                                                                                                                                            quantidade_cura_npc, ocioso, npc_estado)
                     
-                    if key_pressed_bot == True:
+                    if(key_pressed_bot == True):
                         turn += 1
         
         """
@@ -225,18 +244,6 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
             a ordem de turnos com a função "turn_order". Finalmente, é verificado o sistema de turnos, onde se três ações tiverem sido realizadas, a função "verifica_botoes_precionados" é chamada para resetar o sistema. 
             Por fim, a tela é atualizada e um pequeno delay é adicionado antes de começar o próximo loop de jogo.
         """                       
-        # Desenha o personagem 1 na tela
-        mt.elementos_tela(screen, per_image_player_1, per_rect_player_1)
-        
-        # Desenha o personagem 2 na tela
-        mt.elementos_tela(screen, per_image_player_2, per_rect_player_2)
-        
-        # Desenha o personagem NPC na tela
-        mt.elementos_tela(screen, npc_image, npc_rect)
-        
-        # Desenha uma borda em volta do mapa
-        mt.desenha_borda(screen)
-        
         # Chama a função barra_HP ao final do loop de jogo
         fmg.barra_HP(per_rect_player_1, screen, hp_value_personagem_player_1, font_hp_ca)
         fmg.barra_HP(per_rect_player_2, screen, hp_value_personagem_player_2, font_hp_ca)
@@ -249,10 +256,7 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
 
         # Atualiza a tela
         pygame.display.update()
-            
-        # Testa a vida dos personagens, se caso for < 0, finaliza o jogo
-        fmg.testa_vida(hp_value_personagem_player_1, hp_value_personagem_player_2, hp_value_npc, screen)
-        
+
         # Printa os turnos
         fmg.turn_order(screen, turn_nomes, turn, font_turns, font)
         
@@ -260,12 +264,31 @@ def gameplay(personagem_1, personagem_2, screen, mapa, name_personagem_1, name_p
         if((key_pressed_player_1 == True) and (key_pressed_player_2 == True) and (key_pressed_bot == True)):
             key_pressed_player_1, key_pressed_player_2, key_pressed_bot = fmg.verifica_botoes_precionados(key_pressed_player_1, key_pressed_player_2, key_pressed_bot)
         
+        # Testa se o player está morto
+        player_1_vivo, player_2_vivo, npc_vivo, per_image_player_1, per_image_player_2, npc_image = fmg.vivo_morto(hp_value_personagem_player_1, hp_value_personagem_player_2, hp_value_npc,
+                                                                                                        player_1_vivo, player_2_vivo, npc_vivo,
+                                                                                                        per_image_player_1, per_image_player_2, npc_image,
+                                                                                                        personagem_1_dead, personagem_2_dead)
+        
+        # Testa a vida dos personagens, se caso for < 0, finaliza o jogo
+        fmg.testa_vida(player_1_vivo, player_2_vivo, npc_vivo, screen)
+        
         # Determina a orderm que será printado os turnos na tela, no caso server para que o turno que for, o nome fique em roxo
         if turn > 3:
             turn = 1
         
+        
         # Atualiza a tela
-        mt.update_tela
+        mt.update_tela()
+        
+        # Desenha o personagem 1 na tela
+        mt.elementos_tela(screen, per_image_player_1, per_rect_player_1)
+        
+        # Desenha o personagem 2 na tela
+        mt.elementos_tela(screen, per_image_player_2, per_rect_player_2)
+        
+        # Desenha o personagem NPC na tela
+        mt.elementos_tela(screen, npc_image, npc_rect)
         
         # Define um delay para o proximo movimento
         mt.delay(70)

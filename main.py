@@ -206,6 +206,7 @@ while running:
                     # Warrior
                     screen_mode = 2 # Troca a tela
                     personagem_1 = "img/personagens/warrior.png" 
+                    personagem_1_dead = "img/personagens/warrior_dead.png" 
                     name_personagem_1 = "Warrior"
                     escolha_player_1 = 1
                     
@@ -213,6 +214,7 @@ while running:
                     # Shielder
                     screen_mode = 2
                     personagem_1 = "img/personagens/shielder.png" 
+                    personagem_1_dead = "img/personagens/shielder_dead.png" 
                     name_personagem_1 = "Shielder"
                     escolha_player_1 = 2
                     
@@ -220,6 +222,7 @@ while running:
                     # Berseker
                     screen_mode = 2
                     personagem_1 = "img/personagens/berserker.png" 
+                    personagem_1_dead = "img/personagens/berserker_dead.png" 
                     name_personagem_1 = "Berserker"
                     escolha_player_1 = 3
                     
@@ -267,6 +270,7 @@ while running:
                     # Warrior
                     screen_mode = 3
                     personagem_2 = "img/personagens/warrior.png" 
+                    personagem_2_dead = "img/personagens/warrior_dead.png" 
                     name_personagem_2 = "Warrior"
                     escolha_player_2 = 1
                     
@@ -274,6 +278,7 @@ while running:
                     # Shielder
                     screen_mode = 3
                     personagem_2 = "img/personagens/shielder.png" 
+                    personagem_2_dead = "img/personagens/shielder_dead.png" 
                     name_personagem_2 = "Shielder"
                     escolha_player_2 = 2
                     
@@ -281,6 +286,7 @@ while running:
                     # Berseker
                     screen_mode = 3
                     personagem_2 = "img/personagens/berserker.png" 
+                    personagem_2_dead = "img/personagens/berserker_dead.png" 
                     name_personagem_2 = "Berserker"
                     escolha_player_2 = 3
                     
@@ -344,14 +350,14 @@ while running:
         mt.limpa_tela(screen)
         
         # Função de gameplay
-        mg.gameplay(personagem_1, personagem_2, screen, map1_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
+        mg.gameplay(personagem_1, personagem_2, personagem_1_dead, personagem_2_dead, screen, map1_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
 
     elif screen_mode == 5:
         # Limpa a tela
         mt.limpa_tela(screen)
         
         # Função de gameplay
-        mg.gameplay(personagem_1, personagem_2, screen, map2_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
+        mg.gameplay(personagem_1, personagem_2, personagem_1_dead, personagem_2_dead, screen, map2_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
 
         
     elif screen_mode == 6:
@@ -359,7 +365,7 @@ while running:
         mt.limpa_tela(screen)
         
         # Função de gameplay
-        mg.gameplay(personagem_1, personagem_2, screen, map3_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
+        mg.gameplay(personagem_1, personagem_2, personagem_1_dead, personagem_2_dead, screen, map3_fundo, name_personagem_1, name_personagem_2, escolha_player_1, escolha_player_2)
 
     mt.update_tela()
     

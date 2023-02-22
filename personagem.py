@@ -22,9 +22,9 @@ class Personagem:
         if escolha == 1:
             self.nome = 'Warrior'
             self.forca = 3
-            self.destreza = 1
+            self.destreza = 3
             self.constituicao = 2
-            self.pv = rolagem_10(4, 0) + (4 * self.constituicao)
+            self.pv = rolagem_10(4, 0) + (4 * self.constituicao) + 10
             self.ca = 12 + self.destreza
             self.arma = 2
 
@@ -33,16 +33,16 @@ class Personagem:
             self.forca = 1
             self.destreza = 5
             self.constituicao = 3
-            self.pv = rolagem_12(4, 0) + (4 * self.constituicao)
+            self.pv = rolagem_12(4, 0) + (4 * self.constituicao) + 10
             self.ca = 12 + self.destreza
             self.arma = 0
 
         elif escolha == 3:
             self.nome = 'Berserker'
             self.forca = 5
-            self.destreza = -2
+            self.destreza = 0
             self.constituicao = 1
-            self.pv = rolagem_8(4, 0) + (4 * self.constituicao)
+            self.pv = rolagem_8(4, 0) + (4 * self.constituicao) + 10
             self.ca = 12 + self.destreza
             self.arma = 4
 

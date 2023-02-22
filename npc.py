@@ -9,10 +9,10 @@ from dados import *
 class Npc:
     def __init__(self):
         self.nome = 'Elemental'
-        self.forca = 5
-        self.destreza = 10
+        self.forca = 7
+        self.destreza = 6
         self.constituicao = 3
-        self.pv = rolagem_12(4, 0) + (4 * self.constituicao)
+        self.pv = rolagem_12(4, 0) + (4 * self.constituicao) + 40
         self.ca = 12 + self.destreza
-        self.arma = 5
+        self.arma = 7
     
