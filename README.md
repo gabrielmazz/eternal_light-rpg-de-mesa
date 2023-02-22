@@ -2,7 +2,7 @@
 
 Este programa tem como objetivo simular um RPG de Mesa, como o Roll20 e o Dnd 5e, utilizando técnicas de inteligência artificial com máquina de estado.
 
-![[Pasted image 20230222171818.png]]
+![](https://i.imgur.com/seAEaHC.png)
 
 O programa irá permitir que os jogadores possam controlar seus personagens e realizar ações em turnos, assim como em um jogo de RPG tradicional. Além disso, o programa será capaz de rolar dados e calcular as consequências das ações dos personagens, como ataques e defesas, utilizando algoritmos de inteligência artificial para garantir a fair-play e uma experiência de jogo enriquecedora.
 
@@ -25,6 +25,8 @@ O programa irá permitir que os jogadores possam controlar seus personagens e re
 
 No loop principal do jogo, a variável "screen_mode" controla qual tela está sendo mostrada (tela de escolha do personagem do jogador 1, tela de escolha do personagem do jogador 2 ou próxima fase). O loop também trata eventos e atualiza a tela usando as funções "desenha_elementos" e "update_tela". Para escolher o personagem, é verificado se uma tecla foi pressionada e a escolha é armazenada em variáveis. A tecla 0 finaliza o jogo., No final ele levará para a tela de escolha de mapas nos mesmo moldes da escolha de personagem.
 
+<img src="https://blogger.googleusercontent.com/img/a/AVvXsEjCXyJAXYLDgI8EXnORZTgugnc0UCRM3uf3-RZVx5NIkJtury4ZHn0_xhon4vT4oI-rbqtZmQ-zo2KRelxDH26jRwa23Unv5WOaBSmRcMkCjudsfv_cVtJM2FtcpNplbthggCTRKlbQZ_NLZYVzWmhIC8SIOjd4PoGqCm8CCDnNAzx9KlpDMUg">
+
 ## Gameplay
 
 O objetivo do jogo é simular um RPG de mesa, onde os jogadores podem controlar seus personagens e realizar ações em turnos. A ordem dos turnos é determinada pela função "determina_turno", que retorna uma lista com os nomes dos jogadores em ordem aleatória.
@@ -34,6 +36,8 @@ A partir da lista de ordem de turnos, cada jogador é chamado uma vez e seu movi
 A renderização dos elementos na tela é feita na função "renderiza_tela", que redesenha os elementos na tela a cada loop do jogo, como os personagens, barras de vida e proteção, e a ordem de turnos. A função "testa_vida" verifica a vida dos personagens, finalizando o jogo caso a vida de algum personagem seja menor que 0. O sistema de turnos é verificado na função "verifica_botoes_precionados", que reseta o sistema após três ações terem sido realizadas.
 
 Em resumo, o gameplay consiste em movimentar os personagens e realizar ações em turnos, seguindo a ordem determinada aleatoriamente. O objetivo é derrotar os oponentes e vencer a partida de RPG.
+
+<img src="https://media.tenor.com/YYZIGDYagm0AAAAM/gumball-dn-d.gif" width="50%">
 
 ## Classes dos Personagens:
 
@@ -45,13 +49,17 @@ A classe "Npc" é usada para modelar personagens não-jogáveis no jogo. Ela tem
 
 As funções "rolagem_10(4, 0)", "rolagem_12(4, 0)" e "rolagem_8(4, 0)" são importadas de um arquivo chamado "dados" e realizam uma rolagem de dados para determinar a quantidade de pontos de vida do personagem. A CA (Classe de Armadura) é calculada como 12 mais a destreza.
 
+<img src="https://i.pinimg.com/originals/37/8a/cb/378acb0dfedf589333608b2c75ca1701.gif">
+
 ## Movimentação dos Players
 
 Estas funções determinam a movimentação de cada player durante os seus respectivos turnos no jogo. É possível movimentar os players utilizando as setinhas do teclado para cima, baixo, esquerda e direita. No entanto, não é possível realizar movimentos na diagonal.
 
 Ao apertar o botão "z", o player realiza um ataque no oponente, desde que estejam engajados. Isso significa que ambos os personagens estão próximos um do outro e é possível realizar o ataque. Além disso, o botão "9" é utilizado para passar o turno para o próximo jogador da lista, enquanto o botão "0" é utilizado para finalizar o jogo e sair do programa.
 
-### Movimentação do NPC
+<img src="https://i.pinimg.com/originals/2e/05/ba/2e05bad274268ae2c9ed1126bbcb78ac.gif">
+
+## Movimentação do NPC
 
 A função `movimentacao_npc()` é responsável por controlar o comportamento do NPC (personagem não-jogador) durante o jogo. Ela recebe informações sobre a posição dos jogadores e do NPC, assim como seus pontos de vida, para decidir o que o NPC deve fazer.
 
@@ -64,6 +72,8 @@ Se apenas um dos jogadores estiver perto, a função escolhe entre os estados de
 Se ambos os jogadores estiverem perto, a função escolhe entre perseguir ou atacar um dos jogadores. Se o jogador estiver a uma distância menor ou igual a `distancia_engajamento` do NPC, a função chama a função `ataque_npc()` para causar dano no jogador. Caso contrário, a função escolhe o estado de perseguir e chama a função `movimento_perseguindo()` para atualizar a posição do NPC.
 
 A função retorna valores que indicam se o turno do jogador já passou, o novo valor dos pontos de vida do NPC e dos jogadores, a nova posição do NPC e a quantidade de itens de cura que ele ainda tem.
+
+<img src="https://i.pinimg.com/originals/db/0f/b3/db0fb38d2ba4aa0a4d6a08959afced9a.gif">
 
 ## Funções da Tela
 
@@ -82,4 +92,5 @@ Este trecho de código contém funções para rolar dados virtuais para jogos de
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue para reportar bugs ou propor melhorias no programa. Se quiser contribuir com código, faça um fork do projeto, faça as modificações e abra um pull request.
-![[dnd-dungeons-and-dragons 1.gif]]
+
+![](https://media.tenor.com/gOCEHYul7PAAAAAi/dnd-dungeons-and-dragons.gif)
