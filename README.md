@@ -27,11 +27,35 @@ O programa irá permitir que os jogadores possam **controlar seus personagens e 
 
 No loop principal do jogo, a variável ``"screen_mode"`` controla qual tela está sendo mostrada (tela de ``escolha do personagem do jogador 1``, tela de ``escolha do personagem do jogador 2`` ou próxima fase). O loop também trata eventos e atualiza a tela usando as funções "desenha_elementos" e "update_tela". Para escolher o personagem, é verificado se uma tecla foi pressionada e a escolha é armazenada em variáveis. A tecla 0 finaliza o jogo., No final ele levará para a tela de ``escolha de mapas`` nos mesmo moldes da escolha de personagem.
 
+```python
+for event in pygame.event.get():
+	if event.type == pygame.QUIT:
+		running = False
+	elif event.type == pygame.KEYDOWN:
+		if event.key == pygame.K_1:
+			# Executa a ação da screen selecionada
+		elif event.key == pygame.K_2:
+			# Executa a ação da screen selecionada
+		elif event.key == pygame.K_3:
+			# Executa a ação da screen selecionada
+		elif event.key == pygame.K_0:
+			# Fecha o programa
+	else
+		continue
+```
+
 <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjCXyJAXYLDgI8EXnORZTgugnc0UCRM3uf3-RZVx5NIkJtury4ZHn0_xhon4vT4oI-rbqtZmQ-zo2KRelxDH26jRwa23Unv5WOaBSmRcMkCjudsfv_cVtJM2FtcpNplbthggCTRKlbQZ_NLZYVzWmhIC8SIOjd4PoGqCm8CCDnNAzx9KlpDMUg" >
 
 ## Gameplay
 
 O *objetivo do jogo é simular um RPG de mesa*, onde os jogadores podem controlar seus personagens e realizar ações em turnos. A ordem dos turnos é determinada pela função ``"determina_turno"``, que retorna uma lista com os nomes dos jogadores em ordem aleatória.
+
+```python
+def determina_turno(player_1, player_2, npc):
+    rolagem_personagem = d.rolagem_20(1, player_1.destreza)  
+    rolagem_personagem_2 = d.rolagem_20(1, player_2.destreza)  
+    rolagem_npc = d.rolagem_20(1, npc.destreza)
+```
 
 A partir da lista de ordem de turnos, cada jogador é chamado uma vez e seu movimento é executado, utilizando as funções ``"movimentacao_player_1"``, ``"movimentacao_player_2"`` e ``"movimentacao_npc"`` para mover os personagens. Antes de cada jogada, é verificado se a jogada já foi realizada, utilizando variáveis booleanas.
 
@@ -39,11 +63,21 @@ A renderização dos elementos na tela é feita na função ``"renderiza_tela"``
 
 Em resumo, o gameplay consiste em movimentar os personagens e realizar ações em turnos, seguindo a ordem determinada aleatoriamente. O objetivo é derrotar os oponentes e vencer a partida de RPG.
 
-<img src="https://media.tenor.com/YYZIGDYagm0AAAAM/gumball-dn-d.gif" width="50%">
+<img src="https://64.media.tumblr.com/2ae2d17fab0ac24129ef1e96f0b61159/tumblr_obisnmUjrQ1s2wio8o1_500.gif">
 
 ## Classes dos Personagens:
 
 O código apresenta *duas classes para modelar personagens em um jogo ou RPG: "Personagem" e "Npc"*.
+
+```python
+self.nome = 'Warrior'  
+self.forca = 3  
+self.destreza = 3  
+self.constituicao = 2  
+self.pv = rolagem_10(4, 0) + (4 * self.constituicao) + 10  
+self.ca = 12 + self.destreza  
+self.arma = 2
+```
 
 A classe ``"Personagem"`` tem sete atributos: ``"escolha", "nome", "pv", "força", "destreza", "constituição" e "ca"``. Ela é baseada em três tipos diferentes de personagens: ``"Warrior", "Shielder" e "Berserker"``. O método "init" é usado para inicializar os atributos quando uma nova instância da classe é criada. Dependendo do valor de ``"escolha"``, o nome, as habilidades e a quantidade de pontos de vida serão atribuídos ao personagem de forma diferente.
 
@@ -55,13 +89,49 @@ As funções "rolagem_10(4, 0)", "rolagem_12(4, 0)" e "rolagem_8(4, 0)" são imp
 
 ## Movimentação dos Players
 
+```python
+def movimentacao_player(event, screen, mapa, per_rect_player, font, 
+						hp_value_personagem_player, key_pressed_player,  
+                         npc_rect, player, npc, hp_value_npc):
+```
+
 Estas *funções determinam a movimentação de cada player durante os seus respectivos turnos* no jogo. É possível *movimentar os players utilizando as setinhas do teclado* para ``cima, baixo, esquerda e direita.`` No entanto, **não é possível realizar movimentos na diagonal.**
 
+```python
+elif event.key == pygame.K_LEFT:
+	# Move para esquerda
+elif event.key == pygame.K_RIGHT:
+	# Move para direita
+elif event.key == pygame.K_UP:
+	# Move para cima
+elif event.key == pygame.K_DOWN:
+	# Move para baixo
+```
+
 Ao apertar o ``botão "z"``, o player realiza um ataque no oponente, desde que estejam engajados. Isso significa que ambos os personagens estão próximos um do outro e é possível realizar o ataque. Além disso, o ``botão "9"`` é utilizado para passar o turno para o próximo jogador da lista, enquanto o ``botão "0"`` é utilizado para finalizar o jogo e sair do programa.
+
+```python
+elif event.key == pygame.K_z:
+	# Faz um ataque
+elif event.key == pygame.K_9:
+	# Passa o turno
+elif event.key == pygame.K_0:
+	# Finaliza o jogo
+```
 
 <img src="https://i.pinimg.com/originals/2e/05/ba/2e05bad274268ae2c9ed1126bbcb78ac.gif">
 
 ## Movimentação do NPC
+
+```python
+def movimentacao_npc(event, screen, mapa, npc_rect, font,   
+                     hp_value_npc, key_pressed_bot,  
+                     player_1, player_2, npc,   
+                     hp_value_personagem_player_1, hp_value_personagem_player_2,  
+                     per_rect_player_1, per_rect_player_2,   
+                     player_1_vivo, player_2_vivo,  
+                     quantidade_cura_npc, ocioso, npc_estado):
+```
 
 A função `movimentacao_npc()` é *responsável por controlar o comportamento do NPC (personagem não-jogador) durante o jogo.* Ela **Recebe informações sobre a posição dos jogadores e do NPC, assim como seus pontos de vida, para decidir o que o NPC deve fazer.**
 
@@ -81,19 +151,43 @@ A função retorna valores que indicam se o turno do jogador já passou, o novo 
 
 As funções da tela são responsáveis por controlar aspectos visuais do jogo, como tamanho da tela, nome da janela, ícone, carregamento de imagens, redimensionamento de imagens, atualização da tela, limpeza da fila de eventos, entre outros.
 
-<img src="https://i.pinimg.com/originals/0c/96/a2/0c96a2b838576941a9342a704bf574f5.gif" width="50%">
+```python
+def escala_imagem(scale, imagem):
+def rederiza_textos(x, y, text):
+def elementos_tela(screen, image, image_rect):
+def update_tela():
+```
+
+<img src="https://i.pinimg.com/originals/0c/96/a2/0c96a2b838576941a9342a704bf574f5.gif">
 
 ## Dados:
 
-Este trecho de código contém funções para rolar dados virtuais para jogos de RPG. Cada função é responsável por rolar uma quantidade diferente de dados (4, 8, 10, 12, ou 20 lados) com uma proficiência específica. As funções rolam um determinado número de dados (especificado pelo argumento "dados") e retornam o valor total da rolagem. A função "rolagem_20_separados" é diferente, pois ela rola apenas 1 dado de 20 lados e retorna o valor do dado e o valor da proficiência (valor do dado + proficiência). Além disso, verifica se o valor do dado é 20 e, se for, aumenta o valor da proficiência em 10, este valor da proficiência na verdade é o dano que o personagem poderá receber.
+Este trecho de código contém funções para rolar dados virtuais para jogos de RPG. Cada função é responsável por rolar uma quantidade diferente de dados ``(4, 8, 10, 12, ou 20 lados)`` com uma proficiência específica. As funções rolam um determinado número de dados (especificado pelo argumento "dados") e retornam o valor total da rolagem. A função ``"rolagem_20_separados"`` é diferente, pois ela rola apenas 1 dado de 20 lados e retorna o *valor do dado e o valor da proficiência (valor do dado + proficiência)*. Além disso, verifica se o valor do dado é 20 e, se for, aumenta o valor da proficiência em 10, este valor da proficiência na verdade é o dano que o personagem poderá receber.
 
-<img src="https://64.media.tumblr.com/2ae2d17fab0ac24129ef1e96f0b61159/tumblr_obisnmUjrQ1s2wio8o1_500.gif">
+```python
+def rolagem_20(dados, proficiencia):  
+    valor = 0  
+    while dados > 0:  
+        valor += (rd.randint(1, 20) + proficiencia)  
+        dados = dados - 1  
+    return valor
+```
+
+<img src="https://media.tenor.com/YYZIGDYagm0AAAAM/gumball-dn-d.gif" width="50%">
 
 ## Tecnologias utilizadas
 
--   Python 3
--   Máquina de estado
--   Algoritmos de inteligência artificial
+-  Contrução do programa:
+	-   Python 3
+	-   Máquina de estado
+	-   Algoritmos de inteligência artificial
+- IDE's utilizadas:
+	- Visual Studio Code
+	- JetBrains PyCharm
+- Bibliotecas utilizadas:
+	- Pygame
+
+<img src="https://i.pinimg.com/originals/d2/41/d1/d241d1214f4245ab1024c86a0059e84d.gif">
 
 ## Contribuição
 
